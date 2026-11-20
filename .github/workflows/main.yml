@@ -60,5 +60,15 @@ jobs:
       - name: Keep Runner Alive
         shell: powershell
         run: |
-          Write-Host "Runner will stay active for 6 hours..."
-          Start-Sleep -Seconds 21600
+          Write-Host "Runner will stay active for 5 hours and 40 minutes..."
+          # 340 دقيقة (5 ساعات و40 دقيقة) لترك 20 دقيقة قبل قفل الجلسة
+          Start-Sleep -Seconds 20400
+
+      - name: Trigger Next Run BEFORE current ends
+        if: always()
+        shell: powershell
+        env:
+          GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+        run: |
+          # تشغيل الـ Workflow تاني بـ Run جديد تماماً
+          gh workflow run main.yml --ref main
